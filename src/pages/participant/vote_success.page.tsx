@@ -1,12 +1,10 @@
-import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
-import kandidat2 from '../../assets/images/kandidat2-large.png';
-import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import TopBar from '../../layouts/topbar.layout';
-import Paper from '@mui/material/Paper';
-import CButtonSecondary from '../../components/button_secondary';
 import { useNavigate } from 'react-router-dom';
+import CheckSuccess from '../../assets/icons/check-circle-success.svg';
+import Logo from '../../assets/icons/votify-logo.svg';
+import CButtonSecondary from '../../components/button_secondary';
 
 export default function VoteSuccessPage() {
   const navigate = useNavigate();
@@ -21,27 +19,36 @@ export default function VoteSuccessPage() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'start',
+          justifyContent: 'center',
           width: '100%',
+          height: '100vh',
         }}
       >
-        <img style={{ height: '18em' }} src={kandidat2} alt="" />
+        <img
+          style={{ height: '7em', marginTop: '3em' }}
+          src={CheckSuccess}
+          alt=""
+        />
         <Typography
           variant="h4"
-          className="bold text-primary-color"
+          className="semibold"
           sx={{
             pt: '0.7em',
             pb: '0.2em',
           }}
         >
-          Rizki Arima
+          Voting successfully
         </Typography>
-        <Typography variant="h6" className="semibold text-light-gray-color">
-          Computer Science - 2020
+        <Typography variant="h6" className="text-light-gray-color">
+          Please wait for the voting results at the designated time
         </Typography>
-        <CButtonSecondary onClick={onFinishVotePressed} sx={{ px: '2em' }}>
+        <CButtonSecondary
+          onClick={onFinishVotePressed}
+          sx={{ px: '2em', mt: '4em', mb: '10em' }}
+        >
           Back To Sign In
         </CButtonSecondary>
+        <img src={Logo} style={{ width: '4.5em', height: '4.5em' }} alt="" />
       </Box>
     </>
   );
