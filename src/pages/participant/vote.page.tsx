@@ -95,14 +95,14 @@ export default function VotePage() {
             pl: '5em',
           }}
         >
-          <Grid item xs={12} sm={6} md={3} component={Paper} square>
+          <Grid item xs={12} sm={6} md={4} lg={3} component={Paper} square>
             <CandidateCard
               name="M Alfi Gufron"
               detail="Computer Science - 2022"
               imagePath={kandidat1}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} component={Paper} square>
+          <Grid item xs={12} sm={6} md={4} lg={3} component={Paper} square>
             <CandidateCard
               name="Rizki Arima"
               detail="Computer Science - 2020"
