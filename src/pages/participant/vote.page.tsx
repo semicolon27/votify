@@ -2,6 +2,8 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import kandidat1 from '../../assets/images/kandidat1.png';
 import kandidat2 from '../../assets/images/kandidat2.png';
 import kandidat3 from '../../assets/images/kandidat3.png';
@@ -84,33 +86,37 @@ export default function VotePage() {
           title="Select your ideal candidate."
           subtitle="Delve into the candidate's vision and mission with keen attention"
         />
-        <Box
+        <Grid
+          container
+          component="main"
+          justifyContent="space-evenly"
           sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'start',
-            justifyContent: 'space-evenly',
-            width: '100%',
             pr: '5em',
             pl: '5em',
           }}
         >
-          <CandidateCard
-            name="M Alfi Gufron"
-            detail="Computer Science - 2022"
-            imagePath={kandidat1}
-          />
-          <CandidateCard
-            name="Rizki Arima"
-            detail="Computer Science - 2020"
-            imagePath={kandidat2}
-          />
-          <CandidateCard
-            name="M Dio Damiyati"
-            detail="Computer Science - 2021"
-            imagePath={kandidat3}
-          />
-        </Box>
+          <Grid item xs={12} sm={6} md={3} component={Paper} square>
+            <CandidateCard
+              name="M Alfi Gufron"
+              detail="Computer Science - 2022"
+              imagePath={kandidat1}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} component={Paper} square>
+            <CandidateCard
+              name="Rizki Arima"
+              detail="Computer Science - 2020"
+              imagePath={kandidat2}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} component={Paper} square>
+            <CandidateCard
+              name="M Dio Damiyati"
+              detail="Computer Science - 2021"
+              imagePath={kandidat3}
+            />
+          </Grid>
+        </Grid>
       </Box>
     </>
   );
