@@ -1,4 +1,4 @@
-import { ActionType, GlobalStateInterface, MovieType } from './types';
+import { ActionType, GlobalStateInterface } from './types';
 import { initialState } from './index';
 
 const Reducer = (state: GlobalStateInterface, action: ActionType): any => {
@@ -17,16 +17,6 @@ const Reducer = (state: GlobalStateInterface, action: ActionType): any => {
       return {
         ...state,
         persistenceType: action.payload,
-      };
-    case 'LIKE_MOVIE':
-      return {
-        ...state,
-        favoriteMovies: state.favoriteMovies.concat(action.payload),
-      };
-    case 'UNLIKE_MOVIE':
-      return {
-        ...state,
-        favoriteMovies: state.favoriteMovies.filter((movie: MovieType) => movie.imdbID !== action.payload),
       };
     case 'PURGE_STATE':
       return initialState;
