@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TopBar from '../../layouts/topbar.layout';
 import Paper from '@mui/material/Paper';
-import CButtonSecondary from '../../components/button_secondary';
+import CButtonSecondary from '../../components/button_secondary.component';
 import { useNavigate } from 'react-router-dom';
 
 export default function CandidateDetailPage() {

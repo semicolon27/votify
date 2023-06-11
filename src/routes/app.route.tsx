@@ -10,7 +10,7 @@ import { createTheme } from '@mui/material';
 const AppRoutes = () => {
   const getRoutes = (): RouteType[] => {
     const isLoggedIn = true;
-    const isAdmin = false;
+    const isAdmin = true;
 
     let routes: RouteType[] = [];
     if (isLoggedIn) {

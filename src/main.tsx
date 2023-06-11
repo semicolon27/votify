@@ -9,13 +9,16 @@ import AppRoutes from './routes/app.route.tsx';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './assets/styles/globalStylesteet.scss';
 import themeConfig from './config/theme.config.ts';
+import { AppProvider } from './context/app.context.tsx';
 // import theme from './config/theme.config.ts';
 // import 'typeface-inter';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider theme={themeConfig}>
-      <AppRoutes />
+      <AppProvider>
+        <AppRoutes />
+      </AppProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

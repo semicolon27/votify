@@ -2,14 +2,15 @@ import axios from 'axios';
 
 const api = axios.create({
   // Pengaturan default untuk Axios
-  baseURL: 'https://api.example.com',
+  baseURL: 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
   },
 });
 
 const setAuthHeader = () => {
-  const token = localStorage.getItem('jwt'); // Membaca JWT dari local storage
+  const token = localStorage.getItem('token'); // Membaca JWT dari local storage
 
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Menambahkan header Authorization jika token JWT tersedia

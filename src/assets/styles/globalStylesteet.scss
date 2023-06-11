@@ -4,6 +4,16 @@ body {
   font-family: 'Inter', sans-serif !important;
   --primary: #2196F3;
   --primary-rgb: 33, 150, 243;
+  --very-light-grey: rgb(173,181,189, 0.5);
+  --very-very-light-grey: rgb(173,181,189, 0.1);
+}
+
+.link-button {
+  text-decoration: none;
+
+  &:hover {
+  text-decoration: underline;
+  }
 }
 
 .MuiInputBase-input  {
@@ -21,6 +31,32 @@ input[type="password"],
 
 .MuiTypography-h1, h1.MuiTypography-root {
   font-weight: bold !important;
+}
+
+.MuiTableRow-head {
+  
+}
+.MuiTableHead-root{
+  background-color: var(--very-very-light-grey);
+  border-radius: 100px;
+}
+
+.MuiTableCell-root{
+ padding: 1em 16px !important;
+}
+
+
+thead th.MuiTableCell-root{
+  border-bottom: none !important;
+}
+
+tbody .MuiTableCell-root{
+  font-weight: 500;
+  color: #6C757D !important;
+}
+
+.menu-active {
+  color: var(--primary);
 }
 
 .bold {
@@ -56,12 +92,28 @@ input[type="password"],
   color: #ADB5BD !important;
 }
 
+.box-wrapper {
+  border: 1px solid var(--very-light-grey);
+  border-radius: 8px;
+  padding: 2em;
+}
+
+.sidebar-menu-item {
+  padding: 0.7em 1.5em !important;
+  margin-left: -1.5em !important;
+  margin-right: -1.5em !important;
+}
+
 .shadow-on-hover {
   transition: box-shadow 0.3s ease-in-out;
   &:hover{
     box-shadow: 0px 16px 40px 0px rgba(112, 144, 176, 0.2);
     
   }
+}
+
+.box-shadow{
+  box-shadow: 0px 16px 40px 0px rgba(112, 144, 176, 0.2);
 }
 
 .MuiButtonBase-root.MuiButton-root.secondary-button {

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import CheckSuccess from '../../assets/icons/check-circle-success.svg';
 import Logo from '../../assets/icons/votify-logo.svg';
-import CButtonSecondary from '../../components/button_secondary';
+import CButtonSecondary from '../../components/button_secondary.component';
 
 export default function VoteSuccessPage() {
   const navigate = useNavigate();

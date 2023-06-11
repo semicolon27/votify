@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import Button, { ButtonProps } from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 export type CButtonProps = ButtonProps & {
   children?: ReactNode;
@@ -8,9 +9,9 @@ export type CButtonProps = ButtonProps & {
 const CButton: React.FC<CButtonProps> = ({ children, ...rest }) => {
   return (
     <>
-      <Button {...rest} size="small">
+      <LoadingButton {...rest} size="small">
         {children}
-      </Button>
+      </LoadingButton>
     </>
   );
 };

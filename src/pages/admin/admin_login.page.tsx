@@ -10,6 +10,11 @@ import CTextField from '../../components/text_field.component';
 import Logo from '../../assets/icons/votify-logo.svg';
 import CheckGray from '../../assets/icons/check-circle-gray.svg';
 import CheckPrimary from '../../assets/icons/check-circle-primary.svg';
+import AuthService from '../../services/auth.service';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../context/auth.context';
+import { LoadingContext } from '../../context/loading.context';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props: any) {
   return (
@@ -72,13 +77,27 @@ function Step(props: { title: string; subtitle: string; active: boolean }) {
 }
 
 export default function AdminLoginPage() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const sAuth = new AuthService();
+  const { setTokenStorage } = useContext(AuthContext);
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const data = new FormData(event.currentTarget);
+      const token = await sAuth.loginAdmin(
+        data.get('username')?.toString() ?? '',
+        data.get('password')?.toString() ?? ''
+      );
+      setTokenStorage(token);
+      navigate('/admin');
+    } catch (err) {
+      alert(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -132,10 +151,10 @@ export default function AdminLoginPage() {
             <CTextField
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
               autoFocus
               sx={{ mb: 3 }}
             />
@@ -149,6 +168,7 @@ export default function AdminLoginPage() {
               autoComplete="current-password"
             />
             <CButton
+              loading={isLoading}
               type="submit"
               fullWidth
               variant="contained"

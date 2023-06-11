@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import CButton from '../../components/button.component';
 import CTextField from '../../components/text_field.component';
 import Logo from '../../assets/icons/votify-logo.svg';
+import DashboardImage from '../../assets/images/dashboard.png';
 import CheckGray from '../../assets/icons/check-circle-gray.svg';
 import CheckPrimary from '../../assets/icons/check-circle-primary.svg';
 import { useNavigate } from 'react-router-dom';
@@ -89,7 +90,15 @@ export default function ParticipantLoginPage() {
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
       <CssBaseline />
-      <Grid item xs={12} sm={8} md={7} component={Paper} square>
+      <Grid
+        item
+        xs={12}
+        sm={10}
+        md={7}
+        alignItems="center"
+        component={Paper}
+        square
+      >
         <Box
           sx={{
             py: 8,
@@ -107,6 +116,8 @@ export default function ParticipantLoginPage() {
             onSubmit={handleSubmit}
             sx={{
               mt: 1,
+              width: '90%',
+              maxWidth: '400px',
             }}
           >
             <Box
@@ -121,16 +132,14 @@ export default function ParticipantLoginPage() {
                 style={{ width: '3em', height: '3em', marginBottom: '1em' }}
                 alt=""
               />
-              <Typography component="h1" variant="h4">
-                Sign In
-              </Typography>
               <Typography
-                className="semibold text-gray-color"
-                variant="subtitle2"
-                sx={{ mb: '2em', mt: '0.5em' }}
+                component="h1"
+                variant="h4"
+                style={{
+                  width: '100%',
+                }}
               >
-                It's Time to Vote and Select the Candidate that Aligns with Your
-                Vision
+                Sign In
               </Typography>
             </Box>
 
@@ -176,37 +185,40 @@ export default function ParticipantLoginPage() {
         <Box
           sx={{
             py: 8,
-            px: 8,
+            px: 10,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'start',
             justifyContent: 'center',
             height: '100vh',
+            overflow: 'hidden',
           }}
         >
-          <Typography component="h1" variant="h5" sx={{ mb: 4 }}>
-            Express your choice
+          <Typography
+            variant="subtitle1"
+            className="text-gray-color semibold"
+            sx={{}}
+          >
+            Empower your voting events with precision planning, seamless data
+            configuration, and anticipation for the moment of truth: unveiling
+            the voting results.
           </Typography>
-          <Step
-            title="Sign In Your Account"
-            subtitle=" Sign in with the email and password that was provided"
-            active={true}
-          />
-          <Step
-            title="Look closely at the candidate"
-            subtitle="Delve into the candidate's vision and mission with keen attention"
-            active={false}
-          />
-          <Step
-            title="Choose your ideal candidate"
-            subtitle="Make your candidate selection with confidence, considering a variety of factors"
-            active={false}
-          />
-          <Step
-            title="Finish, wait for result"
-            subtitle="Anticipate the thrilling moment of election results, awaiting the unveiling at the designated time"
-            active={false}
-          />
+          <Typography
+            sx={{ mb: 1 }}
+            className="text-light-gray-color"
+            variant="body1"
+          >
+            www.votify.co.id
+          </Typography>
+          <div className="">
+            <img
+              style={{
+                height: '30em',
+              }}
+              src={DashboardImage}
+              alt=""
+            />
+          </div>
         </Box>
       </Grid>
     </Grid>
