@@ -1,11 +1,13 @@
-import { AxiosError, AxiosResponse } from "axios"
+import axios, { AxiosError, AxiosResponse } from "axios"
 import request from "../utils/request"
 
 class AuthService {
 
   public loginAdmin = async (username: string, password: string) => {
     try {
-      const res: AxiosResponse = await request.post('/admin/login', {
+      // this.cobaajainimah()
+      // const res: AxiosResponse = await request.post('/admin/login', {
+      const res: AxiosResponse = await axios.post('http://localhost:8080/admin/login', {
         username,
         password,
       })
@@ -19,8 +21,10 @@ class AuthService {
     }
   }
 
-  public loginParticipant = async () => {
-    const res = await request.post('/participant/login',)
+  public loginParticipant = async (regnumber = '', password = '') => {
+    const res = await request.post('http://localhost:8080/admin/login', {
+      regnumber, password
+    })
     if (res.status == 200) return res.data
     throw Error(res.data.error)
   }
