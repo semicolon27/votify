@@ -9,19 +9,19 @@ const Reducer = (state: GlobalStateInterface, action: ActionType): any => {
         loggedUser: action.payload,
       };
     case 'AUTHENTICATE_USER':
-      return {;
+      return {
         ...state,
-  isUserAuthenticated: action.payload,
+        isUserAuthenticated: action.payload,
       };
     case 'SET_PERSISTENCE':
-return {
-  ...state,
-  persistenceType: action.payload,
-};
+      return {
+        ...state,
+        persistenceType: action.payload,
+      };
     case 'PURGE_STATE':
-return initialState;
+      return initialState;
     default:
-return state;
+      return state;
   }
 };
 
