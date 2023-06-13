@@ -10,67 +10,41 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Sidebar, { drawerWidth } from '../../layouts/sidebar.layout';
-import TopBarCandidate from '../../layouts/topbar_admin.layout';
-import CandidateService from '../../services/candidate.service';
+import TopBarScore from '../../layouts/topbar_admin.layout';
+import VoteService from '../../services/vote.service';
 import { useContext, useEffect, useState } from 'react';
 import { LoadingContext } from '../../context/loading.context';
-import EditIcon from '../../assets/icons/edit.svg';
-import DeleteIcon from '../../assets/icons/delete.svg';
-import { useNavigate } from 'react-router-dom';
+import { CandidateType } from './candidates.page';
+import GroupIcon from '../../assets/icons/users-more.svg';
 
-export interface VisionType {
+interface ScoreType {
   candidateid: string;
-  mission: string;
-}
-export interface MissionType {
-  candidateid: string;
-  vision: string;
-}
-export interface CandidateType {
-  id: string;
-  option: string;
-  name: string;
-  label: string;
-  image: string;
-  vision: VisionType[];
-  mission: MissionType[];
+  candidate: CandidateType;
+  count: string;
 }
 
-export default function CandidatesPage() {
-  const sCandidate = new CandidateService();
+export default function ScoresPage() {
+  const sVote = new VoteService();
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
-  const [candidates, setCandidates] = useState<CandidateType[]>([]);
-  const navigate = useNavigate();
+  const [scores, setScores] = useState<ScoreType[]>([]);
 
-  const getCandidates = async () => {
+  const getScores = async () => {
     setIsLoading(true);
     try {
-      const result = await sCandidate.getCandidates();
-      setCandidates(result);
+      const result = await sVote.getVotesCount();
+      setScores(result);
     } catch (err) {
       alert(err);
     } finally {
       setIsLoading(false);
     }
   };
-  const onDeleteSubmit = async (id: string) => {
-    try {
-      const ok = await confirm('Anda yakin akan menghapus kandidat ?');
-      if (ok) {
-        await sCandidate.deleteCandidate(id);
-        await sCandidate.getCandidates();
-        alert('Berhasil menghapus kandidat');
-      }
-    } catch (err) {
-      alert('gagal hapus kandidat, ' + err);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
       // await getTokenFromStorageOrLogout();
-      getCandidates();
+      getScores();
     };
     fetchData();
   }, []);
@@ -95,22 +69,7 @@ export default function CandidatesPage() {
           }}
         >
           <CssBaseline />
-          <TopBarCandidate
-            title="Candidate"
-            trailing={
-              <Link href="#" underline="hover">
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <span className="semibold">+ New Candidate</span>
-                </div>
-              </Link>
-            }
-            // breadcrumbs={[
-            //   {
-            //     name: 'Participant',
-            //     route: '/participant',
-            //   },
-            // ]}
-          />
+          <TopBarScore title="Score" />
           <div style={{ margin: '0em 1em' }} className="box-wrapper">
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -131,7 +90,7 @@ export default function CandidatesPage() {
                         className="medium text-light-gray-color"
                       >
                         {' '}
-                        Label
+                        Total Voter
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -145,9 +104,9 @@ export default function CandidatesPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {candidates.map((row) => (
+                  {scores.map((row) => (
                     <TableRow
-                      key={row.name}
+                      key={row.candidate.name}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell>
@@ -169,19 +128,11 @@ export default function CandidatesPage() {
                                 width: '5em',
                                 marginRight: '1em',
                               }}
-                              src={row.image}
+                              src={row.candidate.image}
                               alt=""
                             />
-                            <span>{row.name}</span>
+                            <span>{row.candidate.name}</span>
                           </Box>
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          variant="body2"
-                          className="medium text-gray-color"
-                        >
-                          {row.label}
                         </Typography>
                       </TableCell>
                       <TableCell>
@@ -199,29 +150,16 @@ export default function CandidatesPage() {
                             <img
                               style={{
                                 objectFit: 'contain',
-                                height: '1.5em',
-                                width: '1.5em',
+                                height: '2em',
+                                width: '2em',
                                 marginRight: '1em',
                               }}
-                              src={EditIcon}
+                              src={GroupIcon}
                               alt=""
-                              className="icon-button"
-                              onClick={() =>
-                                navigate('/admin/candidate/edit/' + row.id)
-                              }
                             />
-                            <img
-                              style={{
-                                objectFit: 'contain',
-                                height: '1.5em',
-                                width: '1.5em',
-                                marginRight: '1em',
-                              }}
-                              src={DeleteIcon}
-                              alt=""
-                              className="icon-button"
-                              onClick={() => onDeleteSubmit(row.id)}
-                            />
+                            <span>
+                              {Number(row.count).toLocaleString('id')}
+                            </span>
                           </Box>
                         </Typography>
                       </TableCell>
@@ -235,7 +173,4 @@ export default function CandidatesPage() {
       </Box>
     </>
   );
-}
-function getTokenFromStorageOrLogout() {
-  throw new Error('Function not implemented.');
 }

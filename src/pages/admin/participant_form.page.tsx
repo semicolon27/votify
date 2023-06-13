@@ -10,30 +10,32 @@ import CTextField from '../../components/text_field.component';
 import { AuthContext } from '../../context/auth.context';
 import { LoadingContext } from '../../context/loading.context';
 import Sidebar, { drawerWidth } from '../../layouts/sidebar.layout';
-import TopBarAdmin from '../../layouts/topbar_admin.layout';
-import AdminService from '../../services/admin.service';
+import TopBarParticipant from '../../layouts/topbar_admin.layout';
+import ParticipantService from '../../services/participant.service';
 
-export default function AdminFormPage(props: { isEdit: boolean }) {
+export default function ParticipantFormPage(props: { isEdit: boolean }) {
   const { isLoading, setIsLoading } = useContext(LoadingContext);
   const { userData, getTokenFromStorageOrLogout } = useContext(AuthContext);
   const { setTokenStorage } = useContext(AuthContext);
   const navigate = useNavigate();
   const params = useParams();
 
-  const sAdmin = new AdminService();
+  const sParticipant = new ParticipantService();
 
+  const [regnumber, setRegnumber] = useState('');
   const [name, setName] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const getAdminById = async () => {
+  const getParticipantById = async () => {
     if (!props.isEdit) return;
     setIsLoading(true);
     try {
-      const result = await sAdmin.getAdminById(params.id ?? '');
-      setUsername(result.username);
-      setName(result.name);
+      const result = await sParticipant.getParticipantByRegnumber(
+        params.id ?? ''
+      );
+      setName(result.regnumber);
+      setRegnumber(result.name);
     } catch (err) {
       alert(err);
     } finally {
@@ -41,10 +43,16 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
     }
   };
 
-  const submitAddAdmin = async () => {
+  const submitAddParticipant = async () => {
     setIsLoading(true);
     try {
-      const result = await sAdmin.addAdmin(username, name, password);
+      const result = await sParticipant.addParticipant(
+        regnumber,
+        name,
+        password
+      );
+      setName(result.fullname);
+      setRegnumber(result.name);
       alert('submit berhasil');
     } catch (err) {
       alert(err);
@@ -53,12 +61,11 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
     }
   };
 
-  const submitEditAdmin = async () => {
+  const submitEditParticipant = async () => {
     setIsLoading(true);
     try {
-      const result = await sAdmin.editAdmin(
-        params.id ?? '',
-        username,
+      const result = await sParticipant.editParticipant(
+        regnumber,
         name,
         password
       );
@@ -73,12 +80,12 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
   const submitForm = async () => {
     const yes = confirm('Yakin akan mensubmit form.');
     if (!yes) return;
-    if (name == '') {
-      alert('name kosong');
+    if (regnumber == '') {
+      alert('regnumber kosong');
       return;
     }
-    if (username == '') {
-      alert('username kosong');
+    if (name == '') {
+      alert('name kosong');
       return;
     }
     if (password != '') {
@@ -88,14 +95,14 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
       }
     }
 
-    if (props.isEdit) submitEditAdmin();
-    if (!props.isEdit) submitAddAdmin();
+    if (props.isEdit) submitEditParticipant();
+    if (!props.isEdit) submitAddParticipant();
   };
 
   useEffect(() => {
     const fetchData = async () => {
       await getTokenFromStorageOrLogout();
-      getAdminById();
+      getParticipantById();
     };
     fetchData();
   }, []);
@@ -120,19 +127,17 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
           }}
         >
           <CssBaseline />
-          <TopBarAdmin
+          <TopBarParticipant
             title={
-              props.isEdit
-                ? 'Detail Administrators'
-                : 'Create New Administrator'
+              props.isEdit ? 'Detail Participant' : 'Create New Participant'
             }
             breadcrumbs={[
               {
-                name: 'Administrators',
-                route: '/admin',
+                name: 'Participants',
+                route: '/admin/participants',
               },
               {
-                name: props.isEdit ? 'Edit Admin' : 'Create Admin',
+                name: props.isEdit ? 'Edit Participant' : 'Create Participant',
               },
             ]}
           />
@@ -145,14 +150,14 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
                 <CTextField
                   required
                   fullWidth
-                  value={username}
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
+                  value={regnumber}
+                  id="regnumber"
+                  label="Reg Number"
+                  name="regnumber"
+                  autoComplete="regnumber"
                   autoFocus
                   sx={{ mb: 3 }}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setRegnumber(e.target.value)}
                 />
               </Grid>
               <Grid item xs={false} md={6}>
@@ -199,6 +204,7 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </Grid>
+              <Grid item xs={12} md={6}></Grid>
               <Grid item xs={12}>
                 <CButton
                   type="submit"
@@ -212,7 +218,7 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
                 </CButton>
               </Grid>
               <Grid item textAlign="center" xs={12}>
-                <CButtonLink to="/admin">Back</CButtonLink>
+                <CButtonLink to="/admin/participant">Back</CButtonLink>
               </Grid>
             </Grid>
           </div>

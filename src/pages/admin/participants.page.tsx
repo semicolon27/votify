@@ -10,27 +10,60 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Sidebar, { drawerWidth } from '../../layouts/sidebar.layout';
-import TopBarAdmin from '../../layouts/topbar_admin.layout';
+import TopBarParticipant from '../../layouts/topbar_admin.layout';
+import ParticipantService from '../../services/participant.service';
+import { useContext, useEffect, useState } from 'react';
+import { LoadingContext } from '../../context/loading.context';
+import EditIcon from '../../assets/icons/edit.svg';
+import DeleteIcon from '../../assets/icons/delete.svg';
+import { useNavigate } from 'react-router-dom';
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
+interface ParticipantType {
+  id: string;
+  name: string;
+  regnumber: string;
+  password: string;
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 export default function ParticipantsPage() {
+  const sParticipant = new ParticipantService();
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+
+  const [participants, setParticipants] = useState<ParticipantType[]>([]);
+  const navigate = useNavigate();
+
+  const getParticipants = async () => {
+    setIsLoading(true);
+    try {
+      const result = await sParticipant.getParticipants();
+      setParticipants(result);
+    } catch (err) {
+      alert(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const onDeleteSubmit = async (id: string) => {
+    try {
+      const ok = await confirm('Anda yakin akan menghapus partisipan ?');
+      if (ok) {
+        await sParticipant.deleteParticipant(id);
+        alert('Berhasil hapus partisipan');
+        await sParticipant.getParticipants();
+      }
+    } catch (err) {
+      alert('gagal hapus partisipan, ' + err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // await getTokenFromStorageOrLogout();
+      getParticipants();
+    };
+    fetchData();
+  }, []);
+
   return (
     <>
       <Box sx={{ display: 'flex' }}>
@@ -51,12 +84,12 @@ export default function ParticipantsPage() {
           }}
         >
           <CssBaseline />
-          <TopBarAdmin
-            title="Administrators"
+          <TopBarParticipant
+            title="Participant"
             trailing={
               <Link href="#" underline="hover">
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <span className="semibold">+ New Administrator</span>
+                  <span className="semibold">+ New Participant</span>
                 </div>
               </Link>
             }
@@ -78,86 +111,108 @@ export default function ParticipantsPage() {
                         className="medium text-light-gray-color"
                       >
                         {' '}
-                        Dessert (100g serving)
+                        Participant
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell>
                       <Typography
                         variant="body2"
                         className="medium text-light-gray-color"
                       >
                         {' '}
-                        Calories
+                        Label
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell>
                       <Typography
                         variant="body2"
                         className="medium text-light-gray-color"
                       >
                         {' '}
-                        Fat&nbsp;(g)
+                        Password
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell>
                       <Typography
                         variant="body2"
                         className="medium text-light-gray-color"
                       >
                         {' '}
-                        Carbs&nbsp;(g)
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography
-                        variant="body2"
-                        className="medium text-light-gray-color"
-                      >
-                        {' '}
-                        Protein&nbsp;(g)
                       </Typography>
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                  {participants.map((row) => (
                     <TableRow
                       key={row.name}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">
+                      <TableCell>
                         <Typography
                           variant="body2"
                           className="medium text-gray-color"
                         >
-                          {row.calories}
+                          {row.name}
                         </Typography>
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell>
                         <Typography
                           variant="body2"
                           className="medium text-gray-color"
                         >
-                          {row.fat}
+                          {row.regnumber}
                         </Typography>
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell>
                         <Typography
                           variant="body2"
                           className="medium text-gray-color"
                         >
-                          {row.carbs}
+                          {row.password}
                         </Typography>
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell>
                         <Typography
                           variant="body2"
                           className="medium text-gray-color"
                         >
-                          {row.protein}
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              direction: 'row',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <img
+                              style={{
+                                objectFit: 'contain',
+                                height: '1.5em',
+                                width: '1.5em',
+                                marginRight: '1em',
+                              }}
+                              src={EditIcon}
+                              alt=""
+                              className="icon-button"
+                              onClick={() =>
+                                navigate(
+                                  '/admin/participant/edit/' + row.regnumber
+                                )
+                              }
+                            />
+                            <img
+                              style={{
+                                objectFit: 'contain',
+                                height: '1.5em',
+                                width: '1.5em',
+                                marginRight: '1em',
+                              }}
+                              src={DeleteIcon}
+                              alt=""
+                              className="icon-button"
+                              onClick={() => onDeleteSubmit(row.regnumber)}
+                            />
+                          </Box>
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -170,4 +225,7 @@ export default function ParticipantsPage() {
       </Box>
     </>
   );
+}
+function getTokenFromStorageOrLogout() {
+  throw new Error('Function not implemented.');
 }

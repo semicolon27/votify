@@ -27,11 +27,12 @@ class CandidateService {
     }
   }
 
-  public addCandidate = async (option: string, name: string, image: string) => {
+  public addCandidate = async (option: string, name: string, label: string, image: string) => {
     try {
       const res = await request.post('/candidate', {
         option,
         name,
+        label,
         image,
       })
       return res.data;
@@ -43,11 +44,12 @@ class CandidateService {
     }
   }
 
-  public editCandidate = async (id: string, option: string, name: string, image: string) => {
+  public editCandidate = async (id: string, option: string, name: string, label: string, image: string) => {
     try {
       const res = await request.put('/candidate/' + id, {
         option,
         name,
+        label,
         image,
       })
       return res.data;

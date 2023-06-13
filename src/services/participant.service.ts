@@ -1,11 +1,11 @@
 import { AxiosError } from "axios";
 import request from "../utils/request"
 
-class VisionService {
+class ParticipantService {
 
-  public getVisions = async () => {
+  public getParticipants = async () => {
     try {
-      const res = await request.get('/visions')
+      const res = await request.get('/participants')
       return res.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -15,9 +15,9 @@ class VisionService {
     }
   }
 
-  public getVisionById = async (id: string) => {
+  public getParticipantByRegnumber = async (regnumber: string) => {
     try {
-      const res = await request.get('/vision/' + id)
+      const res = await request.get('/participant/' + regnumber)
       return res.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -27,11 +27,12 @@ class VisionService {
     }
   }
 
-  public addVision = async (candidateid: string, vision: string) => {
+  public addParticipant = async (regnumber: string, name: string, password: string) => {
     try {
-      const res = await request.post('/vision', {
-        candidateid,
-        vision,
+      const res = await request.post('/participant', {
+        regnumber,
+        name,
+        password,
       })
       return res.data;
     } catch (err) {
@@ -42,11 +43,12 @@ class VisionService {
     }
   }
 
-  public editVision = async (id: string, candidateid: string, vision: string) => {
+  public editParticipant = async (regnumber: string, name: string, password: string) => {
     try {
-      const res = await request.put('/vision/' + id, {
-        candidateid,
-        vision,
+      const res = await request.put('/participant/' + regnumber, {
+        regnumber,
+        name,
+        password,
       })
       return res.data;
     } catch (err) {
@@ -57,9 +59,9 @@ class VisionService {
     }
   }
 
-  public deleteVision = async (id: string) => {
+  public deleteParticipant = async (id: string) => {
     try {
-      const res = await request.delete('/vision/' + id)
+      const res = await request.delete('/participant/' + id)
       return res.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -70,4 +72,4 @@ class VisionService {
   }
 }
 
-export default VisionService
+export default ParticipantService

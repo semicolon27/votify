@@ -8,8 +8,8 @@ const api = axios.create({
   },
 });
 
-const setAuthHeader = () => {
-  const token = localStorage.getItem('token'); // Membaca JWT dari local storage
+const setAuthHeader = async () => {
+  const token = await localStorage.getItem('token'); // Membaca JWT dari local storage
 
   api.defaults.headers.common['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, X-CSRF-Token'
   api.defaults.headers.common['Access-Control-Allow-Methods'] = 'OPTIONS, GET, POST, PUT, DELETE'

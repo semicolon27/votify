@@ -10,30 +10,32 @@ import CTextField from '../../components/text_field.component';
 import { AuthContext } from '../../context/auth.context';
 import { LoadingContext } from '../../context/loading.context';
 import Sidebar, { drawerWidth } from '../../layouts/sidebar.layout';
-import TopBarAdmin from '../../layouts/topbar_admin.layout';
-import AdminService from '../../services/admin.service';
+import TopBarCandidate from '../../layouts/topbar_admin.layout';
+import CandidateService from '../../services/candidate.service';
 
-export default function AdminFormPage(props: { isEdit: boolean }) {
+export default function CandidateFormPage(props: { isEdit: boolean }) {
   const { isLoading, setIsLoading } = useContext(LoadingContext);
   const { userData, getTokenFromStorageOrLogout } = useContext(AuthContext);
   const { setTokenStorage } = useContext(AuthContext);
   const navigate = useNavigate();
   const params = useParams();
 
-  const sAdmin = new AdminService();
+  const sCandidate = new CandidateService();
 
+  const [label, setLabel] = useState('');
   const [name, setName] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [image, setImage] = useState('');
+  const [option, setOption] = useState('');
 
-  const getAdminById = async () => {
+  const getCandidateById = async () => {
     if (!props.isEdit) return;
     setIsLoading(true);
     try {
-      const result = await sAdmin.getAdminById(params.id ?? '');
-      setUsername(result.username);
+      const result = await sCandidate.getCandidateById(params.id ?? '');
       setName(result.name);
+      setOption(result.option);
+      setLabel(result.label);
+      setImage(result.image);
     } catch (err) {
       alert(err);
     } finally {
@@ -41,10 +43,11 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
     }
   };
 
-  const submitAddAdmin = async () => {
+  const submitAddCandidate = async () => {
     setIsLoading(true);
     try {
-      const result = await sAdmin.addAdmin(username, name, password);
+      const result = await sCandidate.addCandidate(option, name, label, image);
+
       alert('submit berhasil');
     } catch (err) {
       alert(err);
@@ -53,14 +56,15 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
     }
   };
 
-  const submitEditAdmin = async () => {
+  const submitEditCandidate = async () => {
     setIsLoading(true);
     try {
-      const result = await sAdmin.editAdmin(
+      const result = await sCandidate.editCandidate(
         params.id ?? '',
-        username,
+        option,
         name,
-        password
+        label,
+        image
       );
       alert('submit berhasil');
     } catch (err) {
@@ -73,29 +77,27 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
   const submitForm = async () => {
     const yes = confirm('Yakin akan mensubmit form.');
     if (!yes) return;
+    if (label == '') {
+      alert('label kosong');
+      return;
+    }
     if (name == '') {
-      alert('name kosong');
+      alert('fullname kosong');
       return;
     }
-    if (username == '') {
-      alert('username kosong');
+    if (image == '') {
+      alert('gambar kosong');
       return;
-    }
-    if (password != '') {
-      if (password != confirmPassword) {
-        alert('password tidak sama.');
-        return;
-      }
     }
 
-    if (props.isEdit) submitEditAdmin();
-    if (!props.isEdit) submitAddAdmin();
+    if (props.isEdit) submitEditCandidate();
+    if (!props.isEdit) submitAddCandidate();
   };
 
   useEffect(() => {
     const fetchData = async () => {
       await getTokenFromStorageOrLogout();
-      getAdminById();
+      getCandidateById();
     };
     fetchData();
   }, []);
@@ -120,19 +122,15 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
           }}
         >
           <CssBaseline />
-          <TopBarAdmin
-            title={
-              props.isEdit
-                ? 'Detail Administrators'
-                : 'Create New Administrator'
-            }
+          <TopBarCandidate
+            title={props.isEdit ? 'Detail Candidate' : 'Create New Candidate'}
             breadcrumbs={[
               {
-                name: 'Administrators',
-                route: '/admin',
+                name: 'Candidate',
+                route: '/admin/candidates',
               },
               {
-                name: props.isEdit ? 'Edit Admin' : 'Create Admin',
+                name: props.isEdit ? 'Edit Candidate' : 'Create Candidate',
               },
             ]}
           />
@@ -145,23 +143,9 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
                 <CTextField
                   required
                   fullWidth
-                  value={username}
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
-                  autoFocus
-                  sx={{ mb: 3 }}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={false} md={6}>
-                <CTextField
-                  required
-                  fullWidth
                   value={name}
                   id="name"
-                  label="Name"
+                  label="Full Name"
                   name="name"
                   autoComplete="name"
                   autoFocus
@@ -169,34 +153,46 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
                   onChange={(e) => setName(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={false} md={6}>
                 <CTextField
                   required
                   fullWidth
-                  value={password}
-                  id="password"
-                  label="Password"
-                  name="password"
-                  autoComplete="password"
-                  type="password"
+                  value={label}
+                  id="label"
+                  label="Label"
+                  name="label"
+                  autoComplete="label"
                   autoFocus
                   sx={{ mb: 3 }}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setLabel(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <CTextField
                   required
                   fullWidth
-                  value={confirmPassword}
-                  id="confirm_password"
-                  label="Confirm Password"
-                  name="confirm_password"
-                  autoComplete="confirm_password"
-                  type="password"
+                  value={image}
+                  id="image"
+                  label="Image"
+                  name="image"
+                  autoComplete="image"
                   autoFocus
                   sx={{ mb: 3 }}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => setImage(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CTextField
+                  required
+                  fullWidth
+                  value={option}
+                  id="option"
+                  label="Option"
+                  name="option"
+                  autoComplete="option"
+                  autoFocus
+                  sx={{ mb: 3 }}
+                  onChange={(e) => setOption(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -212,7 +208,7 @@ export default function AdminFormPage(props: { isEdit: boolean }) {
                 </CButton>
               </Grid>
               <Grid item textAlign="center" xs={12}>
-                <CButtonLink to="/admin">Back</CButtonLink>
+                <CButtonLink to="/admin/candidate">Back</CButtonLink>
               </Grid>
             </Grid>
           </div>

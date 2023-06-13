@@ -78,7 +78,7 @@ function Step(props: { title: string; subtitle: string; active: boolean }) {
 
 export default function AdminLoginPage() {
   const sAuth = new AuthService();
-  const { setTokenStorage } = useContext(AuthContext);
+  const { getTokenFromStorage, setTokenStorage } = useContext(AuthContext);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
   const navigate = useNavigate();
 
@@ -91,7 +91,8 @@ export default function AdminLoginPage() {
         data.get('username')?.toString() ?? '',
         data.get('password')?.toString() ?? ''
       );
-      setTokenStorage(token);
+      await setTokenStorage(token);
+      await getTokenFromStorage();
       navigate('/admin');
     } catch (err) {
       alert(err);

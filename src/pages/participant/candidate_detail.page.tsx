@@ -6,13 +6,56 @@ import Box from '@mui/material/Box';
 import TopBar from '../../layouts/topbar.layout';
 import Paper from '@mui/material/Paper';
 import CButtonSecondary from '../../components/button_secondary.component';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../context/auth.context';
+import { LoadingContext } from '../../context/loading.context';
+import CandidateService from '../../services/candidate.service';
 
 export default function CandidateDetailPage() {
   const navigate = useNavigate();
   const onBackPressed = () => {
     navigate(-1);
   };
+
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const { userData, getTokenFromStorageOrLogout } = useContext(AuthContext);
+  const { setTokenStorage } = useContext(AuthContext);
+  const params = useParams();
+
+  const sCandidate = new CandidateService();
+
+  const [label, setLabel] = useState('');
+  const [name, setName] = useState('');
+  const [vision, setVission] = useState<any[]>([]);
+  const [mission, setMission] = useState<any[]>([]);
+  const [image, setImage] = useState('');
+  const [option, setOption] = useState('');
+
+  const getCandidateById = async () => {
+    setIsLoading(true);
+    try {
+      const result = await sCandidate.getCandidateById(params.id ?? '');
+      setName(result.name);
+      setOption(result.option);
+      setLabel(result.label);
+      setImage(result.image);
+      setVission(result.vision);
+      setMission(result.mission);
+    } catch (err) {
+      alert(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getTokenFromStorageOrLogout();
+      getCandidateById();
+    };
+    fetchData();
+  }, []);
   return (
     <>
       <CssBaseline />
@@ -52,7 +95,7 @@ export default function CandidateDetailPage() {
                 width: '100%',
               }}
             >
-              <img style={{ height: '18em' }} src={kandidat2} alt="" />
+              <img style={{ height: '18em' }} src={image} alt="" />
               <Typography
                 variant="h4"
                 className="bold text-primary-color"
@@ -61,13 +104,13 @@ export default function CandidateDetailPage() {
                   pb: '0.2em',
                 }}
               >
-                Rizki Arima
+                {name}
               </Typography>
               <Typography
                 variant="h6"
                 className="semibold text-light-gray-color"
               >
-                Computer Science - 2020
+                {label}
               </Typography>
             </Box>
           </Grid>
@@ -80,15 +123,15 @@ export default function CandidateDetailPage() {
               >
                 Vision
               </Typography>
-              <Typography
-                variant="subtitle1"
-                className="semibold text-light-gray-color"
-                style={{ marginLeft: '0.3em' }}
-              >
-                To be a leading provider of innovative and sustainable solutions
-                in the field of renewable energy, contributing to a greener and
-                more sustainable future
-              </Typography>
+              {vision.map((row) => (
+                <Typography
+                  variant="subtitle1"
+                  className="semibold text-light-gray-color"
+                  style={{ marginLeft: '0.3em' }}
+                >
+                  {row.vision}
+                </Typography>
+              ))}
 
               <Typography
                 variant="h5"
@@ -102,26 +145,15 @@ export default function CandidateDetailPage() {
                   style={{ marginLeft: '-1em' }}
                   className="text-light-gray-color"
                 >
-                  <li>
-                    Deliver high-quality and reliable renewable energy products
-                    and services that meet the evolving needs of our customers.
-                  </li>
-                  <li>
-                    Drive innovation and research to develop cutting-edge
-                    technologies that optimize energy efficiency and harness
-                    renewable resources.
-                  </li>
-                  <li>
-                    Collaborate with industry partners and stakeholders to
-                    promote the adoption of renewable energy solutions and
-                    contribute to a sustainable energy ecosystem.
-                  </li>
+                  {mission.map((row) => (
+                    <li>{row.mission}</li>
+                  ))}
                 </ol>
               </Typography>
             </Box>
           </Grid>
-          <Grid xs={12} container justifyContent="flex-end" component={Paper}>
-            <Grid item>
+          <Grid container justifyContent="flex-end" component={Paper}>
+            <Grid item xs={12}>
               <CButtonSecondary onClick={onBackPressed} sx={{ px: '2em' }}>
                 Back to Candidates
               </CButtonSecondary>

@@ -12,6 +12,10 @@ import DashboardImage from '../../assets/images/dashboard.png';
 import CheckGray from '../../assets/icons/check-circle-gray.svg';
 import CheckPrimary from '../../assets/icons/check-circle-primary.svg';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/auth.context';
+import { LoadingContext } from '../../context/loading.context';
+import AuthService from '../../services/auth.service';
 
 function Copyright(props: any) {
   return (
@@ -31,60 +35,29 @@ function Copyright(props: any) {
   );
 }
 
-function Step(props: { title: string; subtitle: string; active: boolean }) {
-  let check;
-  let classNameTitle = '';
-  let classNameSubtitle = '';
-  if (props.active) {
-    check = <img src={CheckPrimary} alt="" style={{ height: '1.7em' }} />;
-  } else {
-    check = <img src={CheckGray} alt="" style={{ height: '1.7em' }} />;
-    classNameTitle = 'disabled-color';
-    classNameSubtitle = 'text-light-gray-color';
-  }
-  return (
-    <>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'start',
-          justifyContent: 'center',
-        }}
-      >
-        {check}
-        <Box sx={{ ml: '0.8em' }}>
-          <Typography
-            variant="subtitle1"
-            className={'semibold ' + classNameTitle}
-          >
-            {props.title}
-          </Typography>
-          <Typography
-            variant="body2"
-            className={'text-dense medium text-gray-color ' + classNameSubtitle}
-            sx={{ mb: 3 }}
-          >
-            {props.subtitle}
-          </Typography>
-        </Box>
-      </Box>
-    </>
-  );
-}
-
 export default function ParticipantLoginPage() {
   const navigate = useNavigate();
+  const { getTokenFromStorage, setTokenStorage } = useContext(AuthContext);
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const sAuth = new AuthService();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-
-    navigate('/vote');
+    try {
+      const data = new FormData(event.currentTarget);
+      const token = await sAuth.loginParticipant(
+        data.get('regnumber')?.toString() ?? '',
+        data.get('password')?.toString() ?? ''
+      );
+      await setTokenStorage(token);
+      await getTokenFromStorage();
+      navigate('/vote');
+    } catch (err) {
+      alert(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -146,10 +119,10 @@ export default function ParticipantLoginPage() {
             <CTextField
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="regnumber"
+              label="RegNumber"
+              name="regnumber"
+              autoComplete="regnumber"
               autoFocus
               sx={{ mb: 3 }}
             />
@@ -166,6 +139,7 @@ export default function ParticipantLoginPage() {
               type="submit"
               fullWidth
               variant="contained"
+              loading={isLoading}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In

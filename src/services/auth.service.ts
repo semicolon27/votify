@@ -3,12 +3,12 @@ import request from "../utils/request"
 
 class AuthService {
 
-  public loginAdmin = async (username: string, password: string) => {
+  public loginAdmin = async (regnumber: string, password: string) => {
     try {
       // this.cobaajainimah()
       // const res: AxiosResponse = await request.post('/admin/login', {
-      const res: AxiosResponse = await axios.post('http://localhost:8080/admin/login', {
-        username,
+      const res: AxiosResponse = await request.post('/admin/login', {
+        regnumber,
         password,
       })
       return res.data
@@ -22,7 +22,7 @@ class AuthService {
   }
 
   public loginParticipant = async (regnumber = '', password = '') => {
-    const res = await request.post('http://localhost:8080/admin/login', {
+    const res = await request.post('/participant/login', {
       regnumber, password
     })
     if (res.status == 200) return res.data

@@ -18,6 +18,10 @@ import { LoadingContext } from '../../context/loading.context';
 import { AuthContext } from '../../context/auth.context';
 import AdminService from '../../services/admin.service';
 
+import EditIcon from '../../assets/icons/edit.svg';
+import DeleteIcon from '../../assets/icons/delete.svg';
+import { useNavigate } from 'react-router-dom';
+
 interface AdminType {
   id: string;
   name: string;
@@ -28,6 +32,7 @@ export default function AdminsPage() {
   const { isLoading, setIsLoading } = useContext(LoadingContext);
   const { userData, getTokenFromStorageOrLogout } = useContext(AuthContext);
   const { setTokenStorage } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const sAdmin = new AdminService();
 
@@ -45,8 +50,25 @@ export default function AdminsPage() {
     }
   };
 
+  const onDeleteSubmit = async (id: string) => {
+    try {
+      const ok = await confirm('Anda yakin akan menghapus admin ?');
+      if (ok) {
+        await sAdmin.deleteAdmin(id);
+        await sAdmin.getAdmins();
+        alert('Berhasil hapus admin');
+      }
+    } catch (err) {
+      alert('Gagal hapus admin, ' + err);
+    }
+  };
+
   useEffect(() => {
-    getAdmins();
+    const fetchData = async () => {
+      await getTokenFromStorageOrLogout();
+      getAdmins();
+    };
+    fetchData();
   }, []);
 
   return (
@@ -81,7 +103,6 @@ export default function AdminsPage() {
             //   },
             // ]}
           />
-          <span>aaaa {userData.username}</span>
           <div style={{ margin: '0em 1em' }} className="box-wrapper">
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -93,16 +114,33 @@ export default function AdminsPage() {
                         className="medium text-light-gray-color"
                       >
                         {' '}
+                        No
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body2"
+                        className="medium text-light-gray-color"
+                      >
+                        {' '}
                         Nama
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell>
                       <Typography
                         variant="body2"
                         className="medium text-light-gray-color"
                       >
                         {' '}
                         Username
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body2"
+                        className="medium text-light-gray-color"
+                      >
+                        {' '}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -117,14 +155,53 @@ export default function AdminsPage() {
                         {index + 1}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {row.username}
+                        {row.name}
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell component="th" scope="row">
                         <Typography
                           variant="body2"
                           className="medium text-gray-color"
                         >
-                          {row.name}
+                          {row.username}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography
+                          variant="body2"
+                          className="medium text-gray-color"
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              direction: 'row',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <img
+                              style={{
+                                objectFit: 'contain',
+                                height: '1.5em',
+                                width: '1.5em',
+                                marginRight: '1em',
+                              }}
+                              src={EditIcon}
+                              alt=""
+                              className="icon-button"
+                              onClick={() => navigate('/admin/edit/' + row.id)}
+                            />
+                            <img
+                              style={{
+                                objectFit: 'contain',
+                                height: '1.5em',
+                                width: '1.5em',
+                                marginRight: '1em',
+                              }}
+                              src={DeleteIcon}
+                              alt=""
+                              className="icon-button"
+                              onClick={() => onDeleteSubmit(row.id)}
+                            />
+                          </Box>
                         </Typography>
                       </TableCell>
                     </TableRow>

@@ -10,7 +10,7 @@ export default function TopBarAdmin(props: {
   breadcrumbs?:
     | {
         name: string;
-        route: string;
+        route?: string;
       }[]
     | undefined;
 }) {
@@ -19,17 +19,24 @@ export default function TopBarAdmin(props: {
       return (
         <Breadcrumbs aria-label="breadcrumb" separator="›">
           {props.breadcrumbs?.map((row, index) => {
-            return (
-              <NavLink
-                style={{ textDecoration: 'none' }}
-                color="inherit"
-                to={row.route}
-              >
+            if (row.route)
+              return (
+                <NavLink
+                  style={{ textDecoration: 'none' }}
+                  color="inherit"
+                  to={row.route}
+                >
+                  <Typography className="text-light-gray-color" variant="body2">
+                    {row.name}
+                  </Typography>
+                </NavLink>
+              );
+            else
+              return (
                 <Typography className="text-light-gray-color" variant="body2">
                   {row.name}
                 </Typography>
-              </NavLink>
-            );
+              );
           })}
         </Breadcrumbs>
       );

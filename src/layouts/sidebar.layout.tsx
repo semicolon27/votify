@@ -59,8 +59,8 @@ export default function Sidebar(props: any) {
 
   const others_menu: MenuData[] = [
     {
-      name: 'Final Score',
-      route: '/admin/final-score',
+      name: 'Score',
+      route: '/admin/score',
       iconPath: ChartVerticalIcon,
       iconPathActive: ChartVerticalIconActive,
     },

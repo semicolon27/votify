@@ -9,7 +9,7 @@ const routes: Route[] = [
     component: <VotePage />,
   },
   {
-    path: '/candidate-detail',
+    path: '/candidate-detail/:id',
     component: <CandidateDetailPage />,
   },
   {

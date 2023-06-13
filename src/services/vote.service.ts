@@ -1,11 +1,11 @@
 import { AxiosError } from "axios";
 import request from "../utils/request"
 
-class ParticipantService {
+class VoteService {
 
-  public getParticipants = async () => {
+  public getVotes = async () => {
     try {
-      const res = await request.get('/participants')
+      const res = await request.get('/votes')
       return res.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -15,9 +15,9 @@ class ParticipantService {
     }
   }
 
-  public getParticipantById = async (id: string) => {
+  public getVotesCount = async () => {
     try {
-      const res = await request.get('/participant/' + id)
+      const res = await request.get('/votes/count')
       return res.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -27,41 +27,23 @@ class ParticipantService {
     }
   }
 
-  public addParticipant = async (regnumber: string, name: string, password: string) => {
+  public getVoteById = async (id: string) => {
     try {
-      const res = await request.post('/participant', {
-        regnumber,
-        name,
-        password,
+      const res = await request.get('/vote/' + id)
+      return res.data;
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        throw Error(err.response?.data.error ?? 'Terjadi kesalahan, ' + err.response?.status ?? err)
+      }
+      throw Error('Terjadi kesalahan.')
+    }
+  }
+
+  public addVote = async (candidateid: string) => {
+    try {
+      const res = await request.post('/vote', {
+        candidateid,
       })
-      return res.data;
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        throw Error(err.response?.data.error ?? 'Terjadi kesalahan, ' + err.response?.status ?? err)
-      }
-      throw Error('Terjadi kesalahan.')
-    }
-  }
-
-  public editParticipant = async (id: string, regnumber: string, name: string, password: string) => {
-    try {
-      const res = await request.put('/participant/' + id, {
-        regnumber,
-        name,
-        password,
-      })
-      return res.data;
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        throw Error(err.response?.data.error ?? 'Terjadi kesalahan, ' + err.response?.status ?? err)
-      }
-      throw Error('Terjadi kesalahan.')
-    }
-  }
-
-  public deleteParticipant = async (id: string) => {
-    try {
-      const res = await request.delete('/participant/' + id)
       return res.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -72,4 +54,4 @@ class ParticipantService {
   }
 }
 
-export default ParticipantService
+export default VoteService

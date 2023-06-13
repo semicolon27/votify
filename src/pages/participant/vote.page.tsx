@@ -1,28 +1,41 @@
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import kandidat1 from '../../assets/images/kandidat1.png';
-import kandidat2 from '../../assets/images/kandidat2.png';
-import kandidat3 from '../../assets/images/kandidat3.png';
-import TopBar from '../../layouts/topbar.layout';
+import Typography from '@mui/material/Typography';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LoadingContext } from '../../context/loading.context';
+import TopBar from '../../layouts/topbar.layout';
+import CandidateService from '../../services/candidate.service';
+import VoteService from '../../services/vote.service';
+import { CandidateType } from '../admin/candidates.page';
 
 function CandidateCard(props: {
+  id: string;
   name: string;
   detail: string;
   imagePath: string;
 }) {
   const navigate = useNavigate();
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const sVote = new VoteService();
 
   const onDetailPressed = () => {
-    navigate('/candidate-detail');
+    navigate('/candidate-detail/' + props.id);
   };
 
-  const onVotePressed = () => {
-    navigate('/vote-success');
+  const onVotePressed = async () => {
+    setIsLoading(true);
+    try {
+      const result = await sVote.addVote(props.id);
+      navigate('/vote-success');
+    } catch (err) {
+      alert(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -38,7 +51,7 @@ function CandidateCard(props: {
       }}
       className="shadow-on-hover"
     >
-      <img src={props.imagePath} alt="" />
+      <img src={props.imagePath} style={{ maxWidth: '18em' }} alt="" />
       <Typography variant="h5" className="semibold" sx={{ mt: '1em' }}>
         {props.name}
       </Typography>
@@ -70,6 +83,32 @@ function CandidateCard(props: {
 }
 
 export default function VotePage() {
+  const sCandidate = new CandidateService();
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+
+  const [candidates, setCandidates] = useState<CandidateType[]>([]);
+  const navigate = useNavigate();
+
+  const getCandidates = async () => {
+    setIsLoading(true);
+    try {
+      const result = await sCandidate.getCandidates();
+      setCandidates(result);
+    } catch (err) {
+      alert(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // await getTokenFromStorageOrLogout();
+      getCandidates();
+    };
+    fetchData();
+  }, []);
+
   return (
     <>
       <CssBaseline />
@@ -95,27 +134,16 @@ export default function VotePage() {
             pl: '5em',
           }}
         >
-          <Grid item xs={12} sm={6} md={4} lg={3} component={Paper} square>
-            <CandidateCard
-              name="M Alfi Gufron"
-              detail="Computer Science - 2022"
-              imagePath={kandidat1}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3} component={Paper} square>
-            <CandidateCard
-              name="Rizki Arima"
-              detail="Computer Science - 2020"
-              imagePath={kandidat2}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} component={Paper} square>
-            <CandidateCard
-              name="M Dio Damiyati"
-              detail="Computer Science - 2021"
-              imagePath={kandidat3}
-            />
-          </Grid>
+          {candidates.map((row) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} component={Paper} square>
+              <CandidateCard
+                name={row.name}
+                detail={row.label}
+                imagePath={row.image}
+                id={row.id}
+              />
+            </Grid>
+          ))}
         </Grid>
       </Box>
     </>
