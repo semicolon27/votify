@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   // Pengaturan default untuk Axios
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'https://api.votify.lab.alfigufron.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
