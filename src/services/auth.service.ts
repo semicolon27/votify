@@ -3,12 +3,12 @@ import request from "../utils/request"
 
 class AuthService {
 
-  public loginAdmin = async (regnumber: string, password: string) => {
+  public loginAdmin = async (username: string, password: string) => {
     try {
       // this.cobaajainimah()
       // const res: AxiosResponse = await request.post('/admin/login', {
       const res: AxiosResponse = await request.post('/admin/login', {
-        regnumber,
+        username,
         password,
       })
       return res.data
